@@ -1,0 +1,386 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A4B4CA9B-09D6-4AC8-B104-D09691D6FE0C}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>Luna.My.MyApplication</StartupObject>
+    <RootNamespace>Luna</RootNamespace>
+    <AssemblyName>Luna</AssemblyName>
+    <MyType>WindowsForms</MyType>
+    <OptionCompare>Text</OptionCompare>
+    <ApplicationIcon>Resources\Moon.ico</ApplicationIcon>
+    <ManifestCertificateThumbprint>A39C25C7C7F3391FE483F497265767DE9ACB1819</ManifestCertificateThumbprint>
+    <ManifestKeyFile>DCFramework_TemporaryKey.pfx</ManifestKeyFile>
+    <GenerateManifests>true</GenerateManifests>
+    <SignManifests>false</SignManifests>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <PublishUrl>ftp://ftp.diegolunadei.it/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>http://localhost/Luna/</InstallUrl>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>publish.htm</WebPage>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.0.4.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>
+    </DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Optimize>false</Optimize>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>
+    </DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.TextTemplating.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.TextTemplating.Modeling.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Class\cCampoDb.vb" />
+    <Compile Include="Class\cPostazione.vb" />
+    <Compile Include="Class\cRelazioneTabella.vb" />
+    <Compile Include="Class\cDatabase.vb" />
+    <Compile Include="Class\cTabella.vb" />
+    <Compile Include="Class\LunaEngine.vb" />
+    <Compile Include="Form\frmMain.Designer.vb">
+      <DependentUpon>frmMain.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form\frmMain.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Module\mdlEnum.vb" />
+    <Compile Include="Module\mdlLuna.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Form\SplashScreen.Designer.vb">
+      <DependentUpon>SplashScreen.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form\SplashScreen.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Res\keywordColored.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>keywordColored.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Template\Authorvb.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Authorvb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Template\ClassBase\LunaContextClassTvb.vb">
+      <DependentUpon>LunaContextClassTvb.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Template\ClassBase\LunaBaseClassTvb.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LunaBaseClassTvb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Template\ClassDAO\LunaDAOClassTvb.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LunaDAOClassTvb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Template\ClassDAO\LunaDAOClassUserTvb.vb">
+      <DependentUpon>LunaDAOClassUserTvb.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Template\ClassEntity\LunaTableClassTvb.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LunaTableClassTvb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Template\Config\LunaConfig.vb">
+      <DependentUpon>LunaConfig.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Template\Interface\ITemplateClass.vb" />
+    <Compile Include="Template\Class\TemplateClassvb.vb" />
+    <Compile Include="Template\ClassEntity\LunaEntityClassTvb.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LunaEntityClassTvb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Template\Interface\LunaEntityInterfaceTvb.vb">
+      <DependentUpon>LunaEntityInterfaceTvb.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Template\Module\LunaModuleTvb.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LunaModuleTvb.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Form\frmMain.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmMain.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\SplashScreen.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SplashScreen.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Res\keywordColored.resx">
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>keywordColored.Designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="ClassDiagram1.cd" />
+    <None Include="My Project\app.manifest" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="Template\Authorvb.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Authorvb.vb</LastGenOutput>
+    </None>
+    <None Include="Template\ClassBase\LunaContextClassTvb.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>LunaContextClassTvb.vb</LastGenOutput>
+      <CustomToolNamespace>My.Templates</CustomToolNamespace>
+    </None>
+    <None Include="Template\ClassBase\LunaBaseClassTvb.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <CustomToolNamespace>My.Templates</CustomToolNamespace>
+      <LastGenOutput>LunaBaseClassTvb.vb</LastGenOutput>
+    </None>
+    <None Include="Template\ClassDAO\LunaDAOClassUserTvb.tt">
+      <Generator>TextTemplatingFilePreProcessor</Generator>
+      <LastGenOutput>LunaDAOClassUserTvb.vb</LastGenOutput>
+      <CustomToolNamespace>My.Templates</CustomToolNamespace>
+    </None>
+    <None Include="Template\ClassDAO\LunaDAOClassTvb.tt">
+      <Generator>TextTemplatingFilePreProcessor</Generator>
+      <LastGenOutput>LunaDAOClassTvb.vb</LastGenOutput>
+      <CustomToolNamespace>My.Templates</CustomToolNamespace>
+    </None>
+    <None Include="Template\ClassEntity\LunaTableClassTvb.tt">
+      <Generator>TextTemplatingFilePreProcessor</Generator>
+      <LastGenOutput>LunaTableClassTvb.vb</LastGenOutput>
+      <CustomToolNamespace>My.Templates</CustomToolNamespace>
+    </None>
+    <None Include="Template\ClassEntity\LunaEntityClassTvb.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>LunaEntityClassTvb.vb</LastGenOutput>
+      <CustomToolNamespace>My.Templates</CustomToolNamespace>
+    </None>
+    <None Include="Template\Config\LunaConfig.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>LunaConfig.vb</LastGenOutput>
+      <CustomToolNamespace>My.Templates</CustomToolNamespace>
+    </None>
+    <None Include="Template\Interface\LunaEntityInterfaceTvb.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>LunaEntityInterfaceTvb.vb</LastGenOutput>
+      <CustomToolNamespace>My.Templates</CustomToolNamespace>
+    </None>
+    <None Include="Template\Module\LunaModuleTvb.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>LunaModuleTvb.vb</LastGenOutput>
+      <CustomToolNamespace>My.Templates</CustomToolNamespace>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Logo5.png" />
+    <None Include="Resources\Default-Tool-Bar30-1.png" />
+    <None Include="Resources\Hardware20-7%402x.png" />
+    <None Include="Resources\LogoLuna.png" />
+    <None Include="Resources\feature_icon_48_oracle.png" />
+    <None Include="Resources\Default-Tool-Bar30-3.png" />
+    <None Include="Resources\Default-Tool-Bar30-11.png" />
+    <None Include="Resources\Miscellaneous20-4%402x.png" />
+    <None Include="Resources\Default-Tool-Bar30-1 - Copia.png" />
+    <None Include="Resources\Actions20-2%402x.png" />
+    <None Include="Resources\sqlserver.png" />
+    <None Include="Resources\Access alt 1.png" />
+    <None Include="Resources\sqlservercompact1.png" />
+    <None Include="Resources\Data-Visualisation20-6%402x.png" />
+    <None Include="Resources\Access-alt-2.png" />
+    <None Include="Resources\Actions30-15.png" />
+    <None Include="Resources\Actions30-16.png" />
+    <None Include="Resources\source1.gif" />
+    <None Include="Resources\source.png" />
+    <None Include="Resources\table1.png" />
+    <None Include="Resources\Logo2.png" />
+    <None Include="Resources\ASF-logo.svg.png" />
+    <Resource Include="Res\CSharp.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Generator>resgen</Generator>
+    </Resource>
+    <Resource Include="Res\vbNet.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <None Include="Resources\windows-table.png" />
+    <None Include="Resources\_save.gif" />
+    <None Include="Resources\oracle_icon.jpg" />
+    <None Include="Resources\sql-full-to-sql-compact.png" />
+    <None Include="Resources\copy.png" />
+    <None Include="Resources\icona access.png" />
+    <None Include="Resources\microsoft_sql_server_icon.jpg" />
+    <None Include="Resources\database.png" />
+    <None Include="Resources\database %281%29.png" />
+    <None Include="Resources\1_copy_32.png" />
+    <None Include="Resources\database-3-1.png" />
+    <None Include="Resources\code.png" />
+    <None Include="Resources\Logo1.png" />
+    <None Include="Resources\Logo3.png" />
+    <None Include="Resources\Logo4.png" />
+    <Content Include="Resources\Moon.ico" />
+    <None Include="Resources\save.png" />
+    <None Include="Resources\Logo.png" />
+    <None Include="Resources\icoCancel.jpg" />
+    <Content Include="Resources\Advanced Options.ico" />
+    <Content Include="Resources\Moon.gif" />
+    <None Include="Resources\sqlservercompact.png" />
+    <None Include="Resources\Newlogo1.png" />
+    <None Include="Resources\Newlogo.png" />
+    <None Include="Resources\icoSel1.jpg" />
+    <None Include="Resources\icoDesel.jpg" />
+    <None Include="Resources\icoSel.jpg" />
+    <None Include="Resources\sourcecode.jpg" />
+    <None Include="Resources\tipoDb.jpg" />
+    <None Include="Resources\source.gif" />
+    <None Include="Resources\ClipboardCopy.gif" />
+    <None Include="Resources\database.gif" />
+    <None Include="Resources\dbUso.png" />
+    <None Include="Resources\icoRefresh.jpg" />
+    <None Include="Resources\table.png" />
+    <None Include="Resources\oracle.jpg" />
+    <None Include="Resources\icoAvanti1.gif" />
+    <None Include="Resources\visual.jpg" />
+    <None Include="Resources\mssql.gif" />
+    <None Include="Resources\access.gif" />
+    <None Include="Resources\icoAvanti.gif" />
+    <None Include="Resources\loghetto.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

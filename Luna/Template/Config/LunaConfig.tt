@@ -1,0 +1,44 @@
+﻿<#@ template debug="false" hostspecific="false" language="VB"  #>
+<#@ assembly name="System.Core"  #>
+<#@ output extension=".config"  #>
+
+<!--********************************* -->
+<!--LUNA ORM -	http://www.lunaorm.org -->
+<!--********************************* -->
+<!--Code created with Luna <#write(My.Application.Info.Version.Major & "." & My.Application.Info.Version.Minor & "." & My.Application.Info.Version.Build & "." & My.Application.Info.Version.Revision) #>  -->
+<!--Author: Diego Lunadei -->
+<!--Date: <#write(Date.Now.ToString("dd/MM/yyyy")) #>  -->
+<!--THIS FILE REPORT SETTING FOR LUNA FOR YOUR CONFIG FILE (WEB.CONFIG or APP.CONFIG) -->
+<!--THIS FILE IS OPTIONAL! LUNA WORK WITH OR WITHOUT THIS FILE -->
+<!--IF YOU NEED IoC ON LUNA YOU CAN SET WHERE IS THE MANAGER FOR EACH ENTITY-->
+<!--IMPORTANT!!! REPLACE IN IOC LUNA SETTING "LUNADAO" WITH YOUR DAO ASSEMBLY NAME-->
+
+<configuration>
+    <appSettings>
+        <!--LUNA SETTINGS-->
+        <add key="DALPROJECTNAMEHERE.LUNA.ShareConnection" value="False"/>
+        <add key="DALPROJECTNAMEHERE.LUNA.DisableLazyLoading" value="False"/>      
+<#
+Dim ConnectionTypeS as string =""
+Select Case Sorgente.TipoSorgente
+                Case enDatasourceType.SQLServer
+					ConnectionTypeS = "SqlConnection"
+				 #>
+        <add key="DALPROJECTNAMEHERE.LUNA.Ioc.ProviderFactory" value="System.Data.SqlClient"/>
+                <#Case enDatasourceType.Oracle
+				ConnectionTypeS = "OracleConnection"
+				 #>
+        <add key="DALPROJECTNAMEHERE.LUNA.Ioc.ProviderFactory" value="System.Data.OracleClient"/>
+                <#Case Else
+				ConnectionTypeS = "OleDbConnection" #>
+        <add key="DALPROJECTNAMEHERE.LUNA.Ioc.ProviderFactory" value="System.Data.OleDb"/>
+<#End Select #><#
+    For each Tabella As cTabella in Sorgente.Tabelle
+        if Tabella.Selezionata then
+		 #>        <add key="DALPROJECTNAMEHERE.LUNA.Ioc.<#=Tabella.NomeClasse  #>" value="LUNADAO.<#=Tabella.NomeClasseDAO  #>"/>
+		<#
+            end if
+    next
+     #>
+    </appSettings>
+</configuration>

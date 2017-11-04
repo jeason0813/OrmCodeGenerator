@@ -1,0 +1,443 @@
+﻿<#@ template debug="true" hostspecific="false" language="VB" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".vb" #>
+<#@ include file="../Authorvb.tt" #>
+Imports System
+Imports System.Xml
+Imports System.Xml.Serialization
+Imports System.Data
+Imports System.Data.Common
+<#
+Dim ConnectionTypeS as string =""
+Dim TipoCampoData As String=""
+Dim Posizione As Integer = 1
+Select Case Sorgente.TipoSorgente
+                Case enDatasourceType.SQLServer
+					ConnectionTypeS = "SqlConnection"
+                    TipoCampoData = "DateTime"
+				#>
+Imports System.Data.SqlClient
+                <#Case enDatasourceType.Oracle
+				ConnectionTypeS = "OracleConnection"
+                TipoCampoData = "DateTime"
+				#>
+Imports System.Data.OracleClient
+                <#Case Else
+				ConnectionTypeS = "OleDBConnection"
+                TipoCampoData = "Date"
+                #>
+Imports System.Data.OleDb
+<#End Select #>
+
+''' <summary>
+'''This class manage persistency on db of <#=Tabella.NomeClasse #> object
+''' </summary>
+''' <remarks>
+'''
+''' </remarks>
+<#
+Dim CommandTypeS as string =""
+Dim DataReaderTypeS as string =""
+Dim TransactionTypeS as string =""
+Dim ParameterTypeS as string =""
+Dim DbTypeS As String = ""
+Select Case Sorgente.TipoSorgente
+    Case enDatasourceType.SQLServer
+		CommandTypeS = "SqlCommand"
+        DataReaderTypeS = "SqlDataReader"
+        TransactionTypeS = "SqlTransaction"
+        ParameterTypeS = "SqlParameter"
+        DbTypeS = "SqlDbType"
+	Case enDatasourceType.Oracle
+        CommandTypeS = "OracleCommand"
+        DataReaderTypeS = "OracleDataReader"
+        TransactionTypeS = "OracleTransaction"
+        ParameterTypeS = "OracleParameter"
+        DbTypeS = "OracleDbType"
+	Case Else
+        CommandTypeS = "OleDbCommand"
+        DataReaderTypeS = "OleDbDataReader"
+        TransactionTypeS = "OleDbTransaction"
+        ParameterTypeS = "OleDbParameter"
+        DbTypeS = "OleDbType"
+end Select 
+
+#>
+Public MustInherit Class _<#=Tabella.NomeClasseDAO #>
+Inherits LUNA.LunaBaseClassDAO(Of <#=Tabella.NomeClasse #>)
+
+''' <summary>
+'''New() create an istance of this class. Use default DB Connection
+''' </summary>
+''' <returns>
+'''
+''' </returns>
+Public Sub New()
+	MyBase.New()
+End Sub
+
+''' <summary>
+'''New() create an istance of this class and specify an OPENED DB connection
+''' </summary>
+''' <returns>
+'''
+''' </returns>
+Public Sub New(ByVal Connection As <#=ConnectionTypeS #>)
+	MyBase.New(Connection)
+End Sub
+
+''' <summary>
+'''Read from DB table <#=Tabella.NomeTabella #>
+''' </summary>
+''' <returns>
+'''Return a <#=Tabella.NomeClasse #> object
+''' </returns>
+Public Overrides Function Read(Id as integer) as <#=Tabella.NomeClasse #>
+    Dim cls as new <#=Tabella.NomeClasse #>
+
+    Try
+        Using myCommand As <#=CommandTypeS #> = _cn.CreateCommand
+        
+            myCommand.CommandText = "SELECT * FROM <#=Tabella.NomeTabella #> where <#=Tabella.CampoChiave.NomeLogico #> = " & Id
+            If Not LUNA.LunaContext.TransactionBox Is Nothing Then myCommand.Transaction = LUNA.LunaContext.TransactionBox.Transaction
+            Using myReader As <#=DataReaderTypeS #> = myCommand.ExecuteReader
+
+                myReader.Read()
+                if myReader.HasRows then
+                    cls.FillFromDataRecord(CType(myReader, IDataRecord))	
+                End If
+                myReader.Close()
+            End Using
+        End Using
+    Catch ex As Exception
+	    ManageError(ex)
+    End Try
+    Return cls
+End Function
+
+''' <summary>
+'''Save on DB table <#=Tabella.NomeTabella #>
+''' </summary>
+''' <returns>
+'''Return ID insert in DB
+''' </returns>
+Public Overrides Function Save(byRef cls as <#=Tabella.NomeClasse #>) as Integer
+
+    Dim Ris as integer=0 'in Ris return Insert Id
+
+    If cls.IsValid Then
+        If cls.IsChanged Then
+            Using myCommand As <#=CommandTypeS#> = New <#=CommandTypeS #>()
+	            Try
+		            Dim sql As String = String.Empty
+		            myCommand.Connection = _cn
+		            If Not LUNA.LunaContext.TransactionBox Is Nothing Then myCommand.Transaction = LUNA.LunaContext.TransactionBox.Transaction
+		            If cls.<#=Tabella.CampoChiave.NomeLogico#> = 0 Then
+                                    sql = "INSERT INTO <#=Tabella.NomeTabella#> ("
+                <#
+                    Posizione=1
+                    For each Campo As cCampoDb in Tabella.Campi
+                        if Campo.Contatore = False then#>
+                            sql &= " <#=Campo.Nome#><#If posizione <> Tabella.Campi.Count Then Write(",")#>"
+                <#
+                        end if
+                        Posizione +=1 
+                    next
+    #>                      sql &= ") VALUES ("
+    <#
+                    Dim Identificatore As String = String.Empty 
+                    Select Case Sorgente.OriginalTipoSorgente
+                        Case enDatasourceType.Access, enDatasourceType.SQLServer
+                            Identificatore = "@"
+                        Case enDatasourceType.Oracle
+                            Identificatore = ":"
+                    End Select
+
+                    Posizione = 1
+                    For each Campo As cCampoDb in Tabella.Campi
+                        If Campo.Contatore = false then
+    #>                      sql &= " <#=Identificatore + Campo.Nome#><#If Posizione <> Tabella.Campi.Count Then Write(",")#>"
+    <#
+                        end if
+                        Posizione +=1
+                    next
+    #>                      sql &= ")"
+		            Else
+			            sql = "UPDATE <#=Tabella.NomeTabella#> SET "
+    <#
+                    Posizione = 1
+                    For each Campo As cCampoDb in Tabella.Campi
+                        if Campo.Contatore = False then
+    #>                  sql &= "<#=Campo.Nome + " = " + Identificatore + Campo.Nome#><#If Posizione <> Tabella.Campi.Count Then Write(",")#>"
+    <#
+                        end if
+                        Posizione +=1
+                    next
+                    #>
+			            sql &= " WHERE <#=Tabella.CampoChiave.Nome#>= " & cls.<#=Tabella.CampoChiave.NomeLogico#>
+		            End if
+
+                     <#
+                    For each Campo As cCampoDb in Tabella.Campi
+                        if Campo.Contatore = False then
+                            If Campo.TipoStringa.ToLower = "datetime" then
+    #>              if cls.<#=Campo.NomeLogico#> <> Date.MinValue then
+                        Dim DataPar As New <#=ParameterTypeS#>("<#=Identificatore + Campo.Nome#>", <#=DbTypeS#>.<#=TipoCampoData#>)
+			            DataPar.Value = cls.<#=Campo.NomeLogico#>
+			            myCommand.Parameters.Add(DataPar)
+                    else
+                        myCommand.Parameters.Add(New <#=ParameterTypeS#>("<#=Identificatore + Campo.Nome#>", DBNull.Value))
+                    end if  
+                    <#
+                            else
+                    #>myCommand.Parameters.Add(New <#=ParameterTypeS#>("<#=Identificatore + Campo.Nome#>", cls.<#=Campo.NomeLogico#>))
+                    <#
+                            end if
+                        end if
+                    next
+                    #>
+                    myCommand.CommandType = CommandType.Text
+		            myCommand.CommandText = sql
+		            myCommand.ExecuteNonQuery()
+
+                    <#
+                    if Tabella.CampoChiave.Contatore then
+    #>              If cls.<#=Tabella.CampoChiave.NomeLogico#>=0 Then
+			            Dim IdInserito as integer = 0
+			            Sql = "select @@identity"
+			            myCommand.CommandText = Sql
+			            Idinserito = myCommand.ExecuteScalar()
+			            cls.<#=Tabella.CampoChiave.NomeLogico#> = Idinserito
+			            Ris = Idinserito
+		            else
+			            Ris  =  cls.<#=Tabella.CampoChiave.NomeLogico#>
+		            End If
+                    <#else#>
+                    Ris  =  cls.<#=Tabella.CampoChiave.NomeLogico#>
+                    <#end if#>
+		            
+
+	            Catch ex As Exception
+		            ManageError(ex)
+	            End Try
+            End Using
+        else
+	        Ris  =  cls.<#=Tabella.CampoChiave.NomeLogico#>
+        End If
+
+    Else
+	    throw new ApplicationException("Object data is not valid")
+    End If
+    Return Ris
+End Function
+
+Private Sub DestroyPermanently(Id as integer) 
+    Try
+
+    Using  myCommand As <#=CommandTypeS#> = New <#=CommandTypeS#>()
+        myCommand.Connection = _cn
+
+        '******IMPORTANT: You can use this commented instruction to make a logical delete .
+        '******Replace DELETED Field with your logic deleted field name.
+        'Dim Sql As String = "UPDATE <#=Tabella.NomeTabella#> SET DELETED=True "
+        Dim Sql As String = "DELETE FROM <#=Tabella.NomeTabella#>"
+        Sql &= " Where <#=Tabella.CampoChiave.Nome#> = " & Id 
+
+        myCommand.CommandText = Sql
+        If Not LUNA.LunaContext.TransactionBox Is Nothing Then myCommand.Transaction = LUNA.LunaContext.TransactionBox.Transaction
+        myCommand.ExecuteNonQuery()
+    
+    End Using
+    Catch ex As Exception
+	    ManageError(ex)
+    End Try
+End Sub
+
+''' <summary>
+'''Delete from DB table <#=Tabella.NomeTabella#>. Accept id of object to delete.
+''' </summary>
+Public Overrides Sub Delete(Id as integer) 
+    <#
+    if Tabella.TipoTabella = enTableType.Table then
+    #>
+    DestroyPermanently (Id)
+    <#
+    end if
+#>End Sub
+
+''' <summary>
+'''Delete from DB table <#=Tabella.NomeTabella#>. Accept object to delete and optional a List to remove the object from.
+''' </summary>
+Public Overrides Sub Delete(byref obj as <#=Tabella.NomeClasse#>, Optional ByRef ListaObj as List (of <#=Tabella.NomeClasse#>) = Nothing)
+    <#
+    if Tabella.TipoTabella = enTableType.Table then
+    #>
+    DestroyPermanently (obj.<#=Tabella.CampoChiave.NomeLogico#>)
+    If Not ListaObj Is Nothing Then ListaObj.Remove(obj)
+    <#
+    end if
+    #> 
+End Sub
+
+''' <summary>
+'''Find on DB table <#=Tabella.NomeTabella#>
+''' </summary>
+''' <returns>
+'''Return first of <#=Tabella.NomeClasse#>
+''' </returns>
+Public Overrides Function Find(ByVal ParamArray Parameter() As LUNA.LunaSearchParameter) As <#=Tabella.NomeClasse#>
+    Dim ris As <#=Tabella.NomeClasse#> = Nothing
+    Dim So As New LUNA.LunaSearchOption With {.Top = 1}
+    Dim l As IEnumerable(Of <#=Tabella.NomeClasse#>) = FindReal(So, Parameter)
+    If l.Count Then
+        ris = l(0)
+    End If
+    Return ris
+End Function
+
+''' <summary>
+'''Find on DB table <#=Tabella.NomeTabella#>
+''' </summary>
+''' <returns>
+'''Return first of <#=Tabella.NomeClasse#>
+''' </returns>
+Public Overloads Function Find(ByVal OrderBy As String, ByVal ParamArray Parameter() As LUNA.LunaSearchParameter) As <#=Tabella.NomeClasse#>
+    Dim ris As <#=Tabella.NomeClasse#> = Nothing
+    Dim So As New LUNA.LunaSearchOption With {.Top = 1, .OrderBy = OrderBy}
+    Dim l As IEnumerable(Of <#=Tabella.NomeClasse#>) = FindReal(So, Parameter)
+    If l.Count Then
+        ris = l(0)
+    End If
+    Return ris
+End Function
+''' <summary>
+'''Find on DB table <#=Tabella.NomeTabella#>
+''' </summary>
+''' <returns>
+'''Return a list of <#=Tabella.NomeClasse#>
+''' </returns>
+Public Overrides Function FindAll(ByVal ParamArray Parameter() As LUNA.LunaSearchParameter) as IEnumerable(Of <#=Tabella.NomeClasse#>)
+    Dim So As New Luna.LunaSearchOption
+    Return FindReal(So, Parameter)
+End Function
+
+''' <summary>
+'''Find on DB table <#=Tabella.NomeTabella#>
+''' </summary>
+''' <returns>
+'''Return a list of <#=Tabella.NomeClasse#>
+''' </returns>
+Public Overloads Function FindAll(ByVal OrderBy As String, ByVal ParamArray Parameter() As LUNA.LunaSearchParameter) as IEnumerable(Of <#=Tabella.NomeClasse#>)
+    Dim So As New Luna.LunaSearchOption With {.OrderBy = OrderBy}
+    Return FindReal(So, Parameter)
+End Function
+
+''' <summary>
+'''Find on DB table <#=Tabella.NomeTabella#>
+''' </summary>
+''' <returns>
+'''Return a list of <#=Tabella.NomeClasse#>
+''' </returns>
+Public Overloads Function FindAll(byVal Top as integer, ByVal OrderBy As String, ByVal ParamArray Parameter() As LUNA.LunaSearchParameter) as IEnumerable(Of <#=Tabella.NomeClasse#>)
+    Dim So As New Luna.LunaSearchOption With {.Top = Top, .OrderBy = OrderBy}
+    Return FindReal(So, Parameter)
+End Function
+
+''' <summary>
+'''Find on DB table <#=Tabella.NomeTabella#>
+''' </summary>
+''' <returns>
+'''Return a list of <#=Tabella.NomeClasse#>
+''' </returns>
+Public Overloads Function FindAll(ByVal SearchOption As LUNA.LunaSearchOption, ByVal ParamArray Parameter() As LUNA.LunaSearchParameter) As IEnumerable(Of <#=Tabella.NomeClasse#>)
+    Return FindReal(SearchOption, Parameter)
+End Function
+
+Private Function FindReal(ByVal SearchOption As LUNA.LunaSearchOption, ByVal ParamArray Parameter() As LUNA.LunaSearchParameter) as iEnumerable(Of <#=Tabella.NomeClasse#>)
+    Dim Ls As New List(Of <#=Tabella.NomeClasse#>)
+    Try
+
+    Dim sql As String = ""
+    sql ="SELECT "   & IIf(SearchOption.Top, " TOP " & SearchOption.Top, "") & " * "
+    sql &=" from <#=Tabella.NomeTabella#>" 
+    For Each Par As LUNA.LunaSearchParameter In Parameter
+	    If Not Par Is Nothing Then
+		    If Sql.IndexOf("WHERE") = -1 Then Sql &= " WHERE " Else Sql &=  " " & Par.LogicOperatorStr & " "
+		        sql &= Par.FieldName & " " & Par.SqlOperator
+                If Par.SqlOperator.IndexOf("IN") <> -1 Then
+                    sql &= " " & ApIn(Par.Value)
+                Else
+                    sql &= " " & Ap(Par.Value)
+                End If
+	    End if
+    Next
+
+    If SearchOption.OrderBy.Length Then Sql &= " ORDER BY " & SearchOption.OrderBy
+
+    Ls = GetData(sql, SearchOption.AddEmptyItem)
+
+    Catch ex As Exception
+	    ManageError(ex)
+    End Try
+    Return Ls
+End Function
+
+Public Overrides Function GetAll(Optional OrderByField as string = "", Optional ByVal AddEmptyItem As Boolean = False) as iEnumerable(Of <#=Tabella.NomeClasse#>)
+    Dim Ls As New List(Of <#=Tabella.NomeClasse#>)
+    Try
+
+    Dim sql As String = ""
+    sql ="SELECT * from <#=Tabella.NomeTabella#>" 
+    If OrderByField.Length Then
+	    Sql &= " ORDER BY " & OrderByField
+    End If
+
+    Ls = GetData(Sql,AddEmptyItem)
+
+    Catch ex As Exception
+	    ManageError(ex)
+    End Try
+    Return Ls
+End Function
+
+Protected Overridable Property EmptyItemDescription As String = "Selezionare una voce"
+
+Protected Function GetData(sql as string, Optional ByVal AddEmptyItem As Boolean = False) as iEnumerable(Of <#=Tabella.NomeClasse#>)
+    Dim Ls As New List(Of <#=Tabella.NomeClasse#>)
+    Try
+        Using myCommand As <#=CommandTypeS#> = _cn.CreateCommand()
+            myCommand.CommandText = sql
+            If Not LUNA.LunaContext.TransactionBox Is Nothing Then myCommand.Transaction = LUNA.LunaContext.TransactionBox.Transaction
+            Using myReader As <#=DataReaderTypeS#> = myCommand.ExecuteReader()
+                If AddEmptyItem Then Ls.Add(New  <#=Tabella.NomeClasse#>() With {<#
+                Posizione = 1
+                For each Campo As cCampoDb in Tabella.Campi
+                    Write("." + Campo.NomeLogico)
+                    if Campo.NomeLogico="Descrizione" then
+                        #> = EmptyItemDescription<#
+                    else
+                        Write(Campo.ValoreDefault)
+                    end if
+                    If Posizione <> Tabella.Campi.Count Then
+                       #>,<#
+                    End If
+                    Posizione +=1
+                next
+                #> })
+                while myReader.Read
+	                Dim classe as new <#=Tabella.NomeClasse#>(CType(myReader, IDataRecord))
+	                Ls.Add(classe)
+                end while
+                myReader.Close()
+            End Using
+        End Using
+
+    Catch ex As Exception
+	    ManageError(ex)
+    End Try
+    Return Ls
+End Function
+End Class

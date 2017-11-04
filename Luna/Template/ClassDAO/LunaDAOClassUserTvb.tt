@@ -1,0 +1,48 @@
+﻿<#@ template debug="true" hostspecific="false" language="VB"  #>
+<#@ assembly name="System.Core"  #>
+<#@ import namespace="System.Linq"  #>
+<#@ import namespace="System.Text"  #>
+<#@ import namespace="System.Collections.Generic"  #>
+<#@ output extension=".vb"  #>
+<#@ include file="../Authorvb.tt"  #>
+Imports System
+Imports System.Xml
+Imports System.Xml.Serialization
+Imports System.Data
+<#
+Dim ConnectionTypeS as string =""
+Select Case Sorgente.TipoSorgente
+                Case enDatasourceType.SQLServer
+					ConnectionTypeS = "SqlConnection"
+				 #>
+Imports System.Data.SqlClient
+                <#Case enDatasourceType.Oracle
+				ConnectionTypeS = "OracleConnection"
+				 #>
+Imports System.Data.OracleClient
+                <#Case Else
+				ConnectionTypeS = "OleDBConnection" #>
+Imports System.Data.OleDb
+<#End Select #>
+
+
+''' <summary>
+'''DAO Class for table <#=Tabella.NomeTabella #>
+''' </summary>
+''' <remarks>
+'''Write your DATABASE custom method here
+''' </remarks>
+Public Class <#=Tabella.NomeClasseDAO #>
+	Inherits _<#=Tabella.NomeClasseDAO #>
+
+    Public Sub New()
+        MyBase.New()
+    End Sub
+
+    Public Sub New(ByVal Connection As <#=ConnectionTypeS #>)
+        MyBase.New(Connection)
+    End Sub
+
+    Protected Overrides Property EmptyItemDescription As String = "Selezionare una voce"
+
+End Class

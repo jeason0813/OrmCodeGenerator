@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Luna.cCampoDb" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAEIAAAACBAABAAJAEgEABAAAAAAAAQAAGEAAQ=</HashCode>
+      <FileName>Class\cCampoDb.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Luna.cDatabase">
+    <Position X="7.25" Y="2.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>BAAISIBQAQICIAJCCAUAIEAAAgAIQABQAIIABAcIAEA=</HashCode>
+      <FileName>Class\cDatabase.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Luna.cPostazione" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAACAAAAAAAAAgAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Class\cPostazione.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Luna.cRelazioneTabella" Collapsed="true">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIgAACCAAAgAAAAAAAAAAAAAQAAAAAAAAAEAAEAAAA=</HashCode>
+      <FileName>Class\cRelazioneTabella.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Luna.cTabella" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACgIAhAEAAEAAIABAQAghAAAgQABAAADACAAAA=</HashCode>
+      <FileName>Class\cTabella.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Luna.frmMain" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>dECQAsSgmjJAsFKLBJHEGtECjEdzJzABlmLNlIosNKA=</HashCode>
+      <FileName>Form\frmMain.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Luna.SplashScreen" Collapsed="true">
+    <Position X="2.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAgAAAAAECAAAAAAAACAEFACgAAAAAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Form\SplashScreen.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Luna.My.MyApplication" Collapsed="true">
+    <Position X="5.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAAAQAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Luna.My.MySettings" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAQAABAAIAACBAABAAAACAAAAAAAABA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Luna.My.Resources.keywordColored" Collapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAAAAAAABEAAAAQAAAAAECAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Module Name="Luna.mdlConvertitori" Collapsed="true">
+    <Position X="0.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAgAAAAAAAAAACAAAAAAAAIEBAAAAAAAAAAAA=</HashCode>
+      <FileName>Module\mdlConvertitori.vb</FileName>
+    </TypeIdentifier>
+  </Module>
+  <Module Name="Luna.mdlEnum" Collapsed="true">
+    <Position X="2.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Module\mdlEnum.vb</FileName>
+    </TypeIdentifier>
+  </Module>
+  <Module Name="Luna.mdlLuna" Collapsed="true">
+    <Position X="4" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>SACAAAhAAIAgAAAAAAAACEABAAIAACBGAAAEAyggAOA=</HashCode>
+      <FileName>Module\mdlLuna.vb</FileName>
+    </TypeIdentifier>
+  </Module>
+  <Module Name="Luna.My.MySettingsProperty" Collapsed="true">
+    <Position X="5.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Module>
+  <Module Name="Luna.My.Resources.Resources" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAEAASACQATFBAJIAAAJVAAcIQiAYAIAIAShBEAgAIA=</HashCode>
+    </TypeIdentifier>
+  </Module>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

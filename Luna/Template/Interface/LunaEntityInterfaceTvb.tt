@@ -1,0 +1,28 @@
+﻿<#@ template debug="true" hostspecific="false" language="VB" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".vb" #>
+
+''' <summary>
+'''Interface for table <#=Tabella.NomeTabella#>
+''' </summary>
+''' <remarks>
+'''Don't write code here
+''' </remarks>
+
+Public Interface <#=Tabella.NomeInterfaccia#>
+        Inherits _<#=Tabella.NomeInterfaccia#>
+
+#Region "Method"
+
+    Function Read(Id As Integer) As Integer
+
+    Function Save() As Integer
+
+    Function IsValid() As Boolean
+
+#End Region
+
+End Interface

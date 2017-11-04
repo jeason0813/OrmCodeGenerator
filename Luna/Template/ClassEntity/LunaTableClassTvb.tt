@@ -1,0 +1,288 @@
+﻿<#@ template debug="true" hostspecific="false" language="VB"  #>
+<#@ assembly name="System.Core"  #>
+<#@ import namespace="System.Linq"  #>
+<#@ import namespace="System.Text"  #>
+<#@ import namespace="System.Collections.Generic"  #>
+<#@ output extension=".vb"  #>
+<#@ include file="../Authorvb.tt"  #>
+Imports System
+Imports System.Xml
+Imports System.Xml.Serialization
+Imports System.Data
+Imports System.Data.Common
+<#
+Dim ConnectionTypeS as string =""
+Select Case Sorgente.TipoSorgente
+                Case enDatasourceType.SQLServer
+					ConnectionTypeS = "SqlConnection"
+				 #>
+Imports System.Data.SqlClient
+                <#Case enDatasourceType.Oracle
+				ConnectionTypeS = "OracleConnection"
+				 #>
+Imports System.Data.OracleClient
+                <#Case Else
+				ConnectionTypeS = "OleDBConnection" #>
+Imports System.Data.OleDb
+<#End Select  #>
+
+''' <summary>
+'''DAO Class for table <#=Tabella.NomeTabella  #>
+''' </summary>
+''' <remarks>
+'''Don't write code here
+''' </remarks>
+
+Public MustInherit Class _<#=Tabella.NomeClasse  #>
+	Inherits LUNA.LunaBaseClassEntity
+    Implements _<#=Tabella.NomeInterfaccia  #>
+'******IMPORTANT: Don't write your code here. Write your code in the Class object that inherits from this Class.
+'******So you can replace this file without lost your code
+
+	Public Sub New()
+
+	End Sub
+
+	Public Sub New(myRecord As IDataRecord)
+		FillFromDataRecord(myRecord)
+	End Sub
+
+Public Overridable Sub FillFromDataRecord(myRecord As IDataRecord) Implements _<#=Tabella.NomeInterfaccia  #>.FillFromDataRecord
+     <#
+    For each Campo As cCampoDb in Tabella.Campi
+        If Campo.AllowDBNull Then
+             #>
+        if not myRecord("<#=Campo.Nome  #>") is DBNull.Value then <#        
+        end if
+         #><#=Campo.NomeLogico  #> = myRecord("<#=Campo.Nome #>")
+    <#
+    next
+     #>   
+End Sub
+
+Private Property Manager As LUNA.ILunaBaseClassDAO(Of <#=Tabella.NomeClasse  #>)
+    Get
+        If _Mgr Is Nothing Then
+            Dim _MgrType As System.Type = LUNA.LunaContext.GetMgrTypeForEntity(Me.GetType)
+            If _MgrType Is Nothing Then _MgrType = GetType(<#=Tabella.NomeClasseDAO  #>)
+            _Mgr = Activator.CreateInstance(_MgrType)
+        End If
+        Return _Mgr
+    End Get
+    Set(value As LUNA.ILunaBaseClassDAO(Of <#=Tabella.NomeClasse  #>))
+        _Mgr = value
+    End Set
+End Property
+
+#Region "Database Field Map"
+
+<#
+    For each Campo As cCampoDb in Tabella.Campi
+ #>
+Protected _<#=Campo.NomeLogico #> as <#=Campo.TipoStringa  #> <#=Campo.ValoreDefault  #>
+Public Overridable Property <#=Campo.NomeLogico #>() as <#=Campo.TipoStringa  #>  Implements _<#=Tabella.NomeInterfaccia #>.<#=Campo.NomeLogico  #>
+    Get
+	    Return _<#=Campo.NomeLogico  #>
+    End Get
+    Set (byval value as <#=Campo.TipoStringa #>)
+	    If _<#=Campo.NomeLogico  #> <> value Then
+	        IsChanged = True
+	        _<#=Campo.NomeLogico  #>= value
+	    End If
+    End Set
+End property 
+
+<#
+    next
+     #>
+
+#End Region
+
+#Region "Method"
+''' <summary>
+'''This method read an <#=Tabella.NomeClasse  #> from DB.
+''' </summary>
+''' <returns>
+'''Return 0 if all ok, 1 if error
+''' </returns>
+Public Overridable Function Read(Id As Integer) As Integer
+    'Return 0 if all ok
+    Dim Ris As Integer = 0
+    Try
+	    Using Manager
+	        Dim int As <#=Tabella.NomeClasse  #> = Manager.Read(Id)
+        <#
+            For each Campo As cCampoDb in Tabella.Campi
+         #>
+            _<#=Campo.NomeLogico #> = int.<#=Campo.NomeLogico  #>
+        <#
+            next
+             #>
+	    End Using
+        Manager = nothing
+    Catch ex As Exception
+	    ManageError(ex)
+	    Ris = 1
+    End Try
+    Return Ris
+End Function
+
+''' <summary>
+'''This method save an <#=Tabella.NomeClasse  #> on DB.
+''' </summary>
+''' <returns>
+'''Return Id insert in DB if all ok, 0 if error
+''' </returns>
+Public Overridable Function Save() As Integer
+    'Return the id Inserted
+    Dim Ris As Integer = 0
+    Try
+	    Using Manager
+	        Ris = Manager.Save(Me)
+	    End Using
+        Manager = nothing
+    Catch ex As Exception
+	    ManageError(ex)
+    End Try
+    Return Ris
+End Function
+
+Protected Function InternalIsValid() As Boolean
+	Dim Ris As Boolean = True
+	<#
+    For each Campo As cCampoDb in Tabella.Campi
+        If Campo.TipoStringa = "string" Then
+            If Campo.AllowDBNull = False Then
+ #>  if _<#=Campo.NomeLogico  #>.Length = 0 then Ris = False
+<#
+            End If
+            If Campo.MaxLength Then
+ #>  if _<#=Campo.NomeLogico #>.Length > <#=Campo.MaxLength #> then Ris = False
+<#
+            End If
+        End If
+    next
+     #>
+
+	Return Ris
+End Function
+
+#End Region
+
+#Region "Embedded Class"
+
+<#
+
+    For Each Rel As cRelazioneTabella In Sorgente.Relazioni
+    
+        If Rel.TabellaOrigine = Tabella.NomeTabella then
+        'relazione diretta
+            If Rel.CampoOrigine = Rel.TbOrig.CampoChiave.Nome Then
+                'se sto facendo una relazione dal mio campo chiave verso un altra tabella dove dentro c'e' il mio campo chiave 
+                'e' una relazione uno a N quindi torno una List Of
+ #>
+'RELAZIONE DIRETTA 1
+Protected _List<#=Rel.TbDest.NomeClasse  #> as List(Of <#=Rel.TbDest.NomeClasse  #>)
+<XmlElementAttribute("List<#=Rel.TbDest.NomeClasse #>")> _
+Public Property List<#=Rel.TbDest.NomeClasse #>() as List(Of <#=Rel.TbDest.NomeClasse  #>)
+    Get
+	    If _List<#=Rel.TbDest.NomeClasse #> Is Nothing Or LUNA.LunaContext.DisableLazyLoading = True Then
+		    Using Mgr As New <#=Rel.TbDest.NomeClasseDAO #>
+				Dim Param1 As New LUNA.LunaSearchParameter("<#=Rel.CampoDestinazione #>", _<#=Rel.CampoOrigine #>)
+				_List<#=Rel.TbDest.NomeClasse  #> = Mgr.FindAll(Param1)
+			End Using 
+	    End If
+	    Return _List<#=Rel.TbDest.NomeClasse  #>
+    End Get
+    Set (ByVal value As List(Of <#=Rel.TbDest.NomeClasse  #>))
+	    _List<#=Rel.TbDest.NomeClasse  #> = value
+    End Set
+End Property
+<#
+            else
+                'se sto facendo una relazione non dal mio campo chiave verso un altra tabella al suo campo chiave e' una relazione 1 a 1 
+                'qui anche devo caricare l'oggetto solo se non è gia caricato
+                'qui devo entrarci se esiste il campo _CampoOrigine dentro la tabella destinazione
+  #>
+'RELAZIONE DIRETTA 2
+<XmlElementAttribute("<#=Rel.TbDest.NomeClasse #>")> _
+Protected _<#=Rel.TbDest.NomeClasse #> As <#=Rel.TbDest.NomeClasse  #>
+Public property <#=Rel.TbDest.NomeClasse #>() As  <#=Rel.TbDest.NomeClasse  #>
+    Get
+	    If _<#=Rel.TbDest.NomeClasse #> Is Nothing Or LUNA.LunaContext.DisableLazyLoading = True Then
+		    Using Mgr As New <#=Rel.TbDest.NomeClasseDAO  #>
+				_<#=Rel.TbDest.NomeClasse #> = Mgr.Read(_<#=Rel.CampoOrigine  #>)
+		    End Using 
+	    End If
+	    Return _<#=Rel.TbDest.NomeClasse  #>
+    End Get
+    Set(ByVal value As <#=Rel.TbDest.NomeClasse  #>)
+	    _<#=Rel.TbDest.NomeClasse #> = value
+	    _<#=Rel.CampoOrigine #> = _<#=Rel.TbDest.NomeClasse  #>.<#=Rel.CampoOrigine  #>
+    End Set
+End Property
+
+<#
+
+            end if
+        elseIf Rel.TabellaDestinazione = Tabella.NomeTabella then            
+        'relazione indiretta
+            If Rel.CampoOrigine <> Rel.TbOrig.CampoChiave.Nome Then
+             #>
+'RELAZIONE INDIRETTA
+Protected _List<#=Rel.TbOrig.NomeClasse #> as List(Of <#=Rel.TbOrig.NomeClasse #>)
+<XmlElementAttribute("List<#=Rel.TbOrig.NomeClasse #>")> _
+Public Property List<#=Rel.TbOrig.NomeClasse  #>() as List(Of <#=Rel.TbOrig.NomeClasse #>)
+Get
+	If _List<#=Rel.TbOrig.NomeClasse #> Is Nothing Or LUNA.LunaContext.DisableLazyLoading = True Then
+		Using Mgr As New <#=Rel.TbOrig.NomeClasseDAO  #>
+			Dim Param1 As New LUNA.LunaSearchParameter("<#=Rel.CampoOrigine #>", _<#=Rel.CampoDestinazione #>)
+			_List<#=Rel.TbOrig.NomeClasse #> = Mgr.FindAll(Param1)
+		End Using
+	End If
+	Return _List<#=Rel.TbOrig.NomeClasse  #>
+End Get
+Set (ByVal value As List(Of <#=Rel.TbOrig.NomeClasse #>))
+	_List<#=Rel.TbOrig.NomeClasse #> = value
+End Set
+End Property
+
+<#
+
+            end if
+        end if
+
+    Next
+
+ #>
+
+#End Region
+
+End Class 
+
+''' <summary>
+'''Interface for table <#=Tabella.NomeTabella  #>
+''' </summary>
+''' <remarks>
+'''Don't write code here
+''' </remarks>
+
+Public Interface _<#=Tabella.NomeInterfaccia  #>
+
+Sub FillFromDataRecord(myRecord As IDataRecord)
+
+#Region "Database Field Map"
+
+    <#
+        For each Campo As cCampoDb in Tabella.Campi
+     #>
+
+    Property <#=Campo.NomeLogico #>() as <#=Campo.TipoStringa #>
+
+    <#
+        next
+         #>
+
+#End Region
+
+End Interface
